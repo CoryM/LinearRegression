@@ -3,15 +3,13 @@
 
 #include <iostream> // Needed for cout and endl
 
+
 class LinearRegression {
     int DataPoints;
-    int slopeCacheValid;
-    float slopeCacheValue;
     float sumX;
     float sumY;
     float sumXX;
     float sumXY;
-
 
 public:
 
@@ -21,8 +19,6 @@ public:
         sumY = 0;
         sumXX = 0;
         sumXY = 0;
-        slopeCacheValid = false;
-        slopeCacheValue = 0;
     }
 
     void addDataPoint(float newX, float newY) {
@@ -31,30 +27,21 @@ public:
         sumXX += (newX * newX);
         sumXY += (newX * newY);
         DataPoints += 1;
-        slopeCacheValid = false;
     }
 
-    float getSlope() {
-        if (slopeCacheValid == false) {
-            float partA, partB;
-
-            partA = (DataPoints * sumXY) - (sumX * sumY);
-            partB = (DataPoints * sumXX) - (sumX * sumX);
-            if (partB == 0.0f) {
-                slopeCacheValue = 0;
-            } else {
-                slopeCacheValue = (partA / partB);
-            }
-            slopeCacheValid = true;
-        }
-        return slopeCacheValue;
+    // Todo move getSlope and getIntercept to getLinearLine 
+    //   getLinearLine should be a struct with slope and intercept
+    float getSlope() {        
+        const auto partA = (DataPoints * sumXY) - (sumX * sumY);
+        const auto partB = (DataPoints * sumXX) - (sumX * sumX);
+        return (partB == 0.0f) ? 0 : (partA / partB);
     };
-
 
     float getIntercept() {
         return (sumY - (this->getSlope()*sumX)) / DataPoints;
     }
 
+    // Todo Move getReport to external
     void getReport() {
         using std::cout;
         using std::endl;
